@@ -13,6 +13,9 @@ import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './login/register/register.component';
 import {HomeComponent} from './home/home.component';
 import {BaseInterceptorService} from './shared/interceptor/base-interceptor.service';
+import { DictCatalogComponent } from './module/system/dictionay/dict-catalog/dict-catalog.component';
+import { DictItemComponent } from './module/system/dictionay/dict-item/dict-item.component';
+import { RoleComponent } from './module/system/role/role.component';
 
 registerLocaleData(zh);
 
@@ -21,7 +24,10 @@ registerLocaleData(zh);
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    DictCatalogComponent,
+    DictItemComponent,
+    RoleComponent
   ],
   imports: [
     BrowserModule,

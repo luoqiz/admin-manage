@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +7,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+  }
+  isCollapsed = false;
+  triggerTemplate = null;
+  @ViewChild('trigger')
+  customTrigger: TemplateRef<void>;
+  editorContent: any;
 
-  ngOnInit() {
+  test() {
+    alert(this.editorContent);
+  }
+
+  /** custom trigger can be TemplateRef **/
+  changeTrigger(): void {
+    this.triggerTemplate = this.customTrigger;
+  }
+
+  ngOnInit(): void {
   }
 
 }

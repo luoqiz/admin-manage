@@ -1,0 +1,123 @@
+<nz-layout style="height: 100%; ">
+  <nz-sider style="background-color: #ffffff;border-radius: 6px 0 0 6px;">
+    <nz-input-group [nzSuffix]="suffixIcon">
+      <input type="text" nz-input placeholder="Search" [(ngModel)]="searchValue">
+    </nz-input-group>
+    <ng-template #suffixIcon>
+      <i class="anticon anticon-search"></i>
+    </ng-template>
+    <nz-tree
+      #treeCom
+      [nzData]="topNodes"
+      nzAsyncData="true"
+      (nzClick)="listChild($event)"
+      (nzExpandChange)="locadChild($event)"
+      (nzSearchValueChange)="nzEvent($event)"
+      [nzShowLine]="true"
+      (nzDblClick)="reloadChild($event)">
+    </nz-tree>
+  </nz-sider>
+  <nz-content class="tableShow">
+    <div class="table-operations">
+      <button nz-button (click)="newDictItem()">新建</button>
+    </div>
+    <div class="table-list">
+      <div style="padding: 10px;border-radius:6px;">
+        <nz-table
+          #ajaxTable
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzData]="dataSet"
+          [nzLoading]="loading"
+          [nzTotal]="total"
+          [(nzPageIndex)]="pageIndex"
+          [(nzPageSize)]="pageSize"
+        ><!--
+             (nzPageIndexChange)="searchData()"
+             (nzPageSizeChange)="searchData(true)"-->
+          <thead>
+          <tr>
+            <th>条目代码</th>
+            <th>条目值</th>
+            <th>父节点</th>
+            <th>显示顺序</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of ajaxTable.data">
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <ng-container *ngIf="!editCache[data.id].edit">
+                    {{data.itemKey}}
+                  </ng-container>
+                  <ng-container *ngIf="editCache[data.id].edit">
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.itemKey">
+                  </ng-container>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <ng-container *ngIf="!editCache[data.id].edit">
+                    {{data.itemValue}}
+                  </ng-container>
+                  <ng-container *ngIf="editCache[data.id].edit">
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.itemValue">
+                  </ng-container>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  {{data.parentKey}}
+                  <!--<ng-container *ngIf="!editCache[data.itemKey].edit">-->
+                  <!--{{data.parentKey}}-->
+                  <!--</ng-container>-->
+                  <!--<ng-container *ngIf="editCache[data.itemKey].edit">-->
+                  <!--<input type="text" nz-input [(ngModel)]="editCache[data.itemKey].data.parentKey">-->
+                  <!--</ng-container>-->
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-cell">
+                <div class="editable-cell-text-wrapper">
+                  <ng-container *ngIf="!editCache[data.id].edit">
+                    {{data.showOrder}}
+                  </ng-container>
+                  <ng-container *ngIf="editCache[data.id].edit">
+                    <input type="text" nz-input [(ngModel)]="editCache[data.id].data.showOrder">
+                  </ng-container>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="editable-row-operations">
+                <ng-container *ngIf="!editCache[data.id].edit">
+                  <a (click)="startEdit(data.id)">编辑</a>
+                  <a (click)="deleteItem(data.id)">删除</a>
+                </ng-container>
+                <ng-container *ngIf="editCache[data.id].edit">
+                  <a (click)="saveEdit(data.id)">保存</a>
+                  <nz-popconfirm [nzTitle]="'Sure to cancel?'" (nzOnConfirm)="cancelEdit(data.id)">
+                    <a nz-popconfirm>取消</a>
+                  </nz-popconfirm>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </nz-content>
+</nz-layout>
+
+
+<!-- <div [froalaEditor] [(froalaModel)]="editorContent"></div>
+ <div [froalaView]="editorContent"></div>
+ <button nz-button="small" (click)="test()" >测试</button>-->

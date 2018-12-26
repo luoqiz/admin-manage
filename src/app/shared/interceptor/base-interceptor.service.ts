@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/http';
 import {catchError, retry} from 'rxjs/operators';
@@ -16,24 +16,32 @@ export class BaseInterceptorService {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     /*设置请求的基地址，方便替换*/
-    const baseUrl = 'http://192.168.1.107:20006';
+    const baseUrl = 'http://127.0.0.1:20010';
     let authReq;
 
-    if (req.url.startsWith('/oauth/token')) {
-      authReq = req.clone({
-        url: baseUrl + req.url,
-        setHeaders: { Authorization: 'Basic Ym95YTpib3lhLXNlY3JldA==', Accept: '*/*' }
-      });
-    } else {
-      if (!sessionStorage.getItem('token')) {
-        this.router.navigate(['/']);
-      } else {
-        authReq = req.clone({
-          url: baseUrl + req.url,
-          setHeaders: { access_token: sessionStorage.getItem('token') }
-        });
-      }
-    }
+    /** 判断是否有有效的token认证 **/
+    // if (req.url.startsWith('/oauth/token')) {
+    //   authReq = req.clone({
+    //     url: baseUrl + req.url,
+    //     setHeaders: { Authorization: 'Basic Ym95YTpib3lhLXNlY3JldA==', Accept: '*/*' }
+    //   });
+    // } else {
+    //   if (!sessionStorage.getItem('token')) {
+    //     this.router.navigate(['/']);
+    //   } else {
+    //     authReq = req.clone({
+    //       url: baseUrl + req.url,
+    //       setHeaders: { access_token: sessionStorage.getItem('token') }
+    //     });
+    //   }
+    // }
+
+
+    authReq = req.clone({
+      url: baseUrl + req.url,
+      setHeaders: {access_token: sessionStorage.getItem('token')}
+    });
+
     console.log(authReq);
     // send cloned request with header to the next handler.
     return next.handle(authReq)

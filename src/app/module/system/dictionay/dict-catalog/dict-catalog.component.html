@@ -1,0 +1,152 @@
+<div>
+  <div class="tableShow">
+    <div class="searchDivShow">
+      <form nz-form [formGroup]="searchModelForm" (ngSubmit)="searchModelFormSubmit()">
+        <div nz-row [nzGutter]="24">
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label nzFor="search-dictKey">字典key</nz-form-label>
+              <nz-form-control>
+                <input formControlName="dictKey" nz-input placeholder="格式：模块名-key" id="search-dictKey">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-label nzFor="search-dictValue">字典名称</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="dictValue" placeholder="字典名称" id="search-dictValue">
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="8">
+            <nz-form-item nzFlex>
+              <nz-form-control>
+                <button nz-button nzType="primary" (click)="searchModelFormSubmit()" type="submit">查询</button>
+                <span style="width: 2rem;display: inline-block"></span>
+                <button nz-button nzType="primary" (click)="open()" type="button">新建</button>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="dataList">
+      <nz-table
+        #ajaxTable
+        nzShowSizeChanger
+        [nzFrontPagination]="false"
+        [nzData]="dataSet"
+        [nzLoading]="loading"
+        [nzTotal]="total"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        (nzPageIndexChange)="searchData()"
+        (nzPageSizeChange)="searchData(true)">
+        <thead>
+        <tr>
+          <th>字典id</th>
+          <th>字典key</th>
+          <th><span>字典名称</span></th>
+          <th><span>数据来源</span></th>
+          <th><span>添加时间</span></th>
+          <th><span>操作</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of ajaxTable.data">
+          <td>{{data.id}}</td>
+          <td>{{data.dictKey}}</td>
+          <td>{{data.dictValue}}</td>
+          <td [ngSwitch]="data.dataSources">
+            <span class="activeSpan" *ngSwitchCase="1">固定</span>
+            <span class="activeSpan" *ngSwitchCase="2">数据库</span>
+            <span class="activeSpan" *ngSwitchCase="3">其他</span>
+          </td>
+          <td>{{data.createTime | date: 'yyyy-MM-dd'}}</td>
+          <td>
+            <button nz-button (click)="updateRow(data.id)"> 修改</button>
+            <button nz-button (click)="deleteRow(data.id)"> 删除</button>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</div>
+
+
+<div>
+  <nz-drawer [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom':'53px' }"
+             [nzMaskClosable]="false" [nzWidth]="720" [nzVisible]="visible" nzTitle="字典纲领记录修改" (nzOnClose)="close(false)">
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+
+      <nz-form-item [hidden]="!validateForm.get('id').value">
+        <nz-form-label [nzSpan]="5" nzRequired nzFor="id">主键id</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input id="id" type="text" nz-input formControlName="id" readonly>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired nzFor="dictKey" nzPlaceHolder="格式：模块名-key">字典key</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input id="dictKey" type="text" nz-input formControlName="dictKey">
+          <nz-form-explain *ngIf="validateForm.get('dictKey').dirty && validateForm.get('dictKey').errors">请输入字典唯一标识key!
+          </nz-form-explain>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzFor="dictValue" nzRequired>字典名称</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input id="dictValue" type="text" nz-input formControlName="dictValue">
+          <nz-form-explain *ngIf="validateForm.get('dictValue').dirty && validateForm.get('dictValue').errors">请输入字典名称!
+          </nz-form-explain>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzFor="dataSources" nzRequired>字典来源</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-radio-group formControlName="dataSources">
+            <label nz-radio nzValue="1">固定</label>
+            <label nz-radio nzValue="2">数据库</label>
+            <label nz-radio nzValue="3">其他</label>
+          </nz-radio-group>
+          <nz-form-explain *ngIf="validateForm.get('dataSources').dirty && validateForm.get('dataSources').errors">
+            请输入字典来源!
+          </nz-form-explain>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzFor="execSql">执行语句</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input id="execSql" type="text" nz-input formControlName="execSql">
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item [hidden]="true">
+        <nz-form-label [nzSpan]="5" nzFor="showOrder" nzRequired>显示顺序</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <nz-input-number id="showOrder" formControlName="showOrder" [nzMin]="1" [nzMax]="1000"
+                           [nzStep]="1"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+
+    <div class="footer">
+      <button type="button" (click)="close(false)" class="ant-btn" style="margin-right: 8px;"><span> 取消</span></button>
+      <button type="button" (click)="submitForm()" class="ant-btn ant-btn-primary"
+              [hidden]="!!validateForm.get('id').value"><span>添加</span></button>
+      <button type="button" (click)="updateRowSubmit()" class="ant-btn ant-btn-primary"
+              [hidden]="!validateForm.get('id').value"><span>更新</span></button>
+    </div>
+  </nz-drawer>
+
+
+</div>
