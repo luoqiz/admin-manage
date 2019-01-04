@@ -6,6 +6,7 @@ import {HomeComponent} from './home/home.component';
 import {RoleComponent} from './module/system/role/role.component';
 import {DictItemComponent} from './module/system/dictionay/dict-item/dict-item.component';
 import {DictCatalogComponent} from './module/system/dictionay/dict-catalog/dict-catalog.component';
+import {UserComponent} from './module/system/user/user.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
@@ -15,7 +16,8 @@ const routes: Routes = [
     path: 'home', component: HomeComponent, children: [
       {path: 'dictionay/catalog', component: DictCatalogComponent},
       {path: 'dictionay/item', component: DictItemComponent},
-      {path: 'role', component: RoleComponent}
+      {path: 'role', component: RoleComponent},
+      {path: 'user', component: UserComponent}
     ]
   }
 ];

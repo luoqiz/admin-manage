@@ -16,6 +16,7 @@ import {BaseInterceptorService} from './shared/interceptor/base-interceptor.serv
 import { DictCatalogComponent } from './module/system/dictionay/dict-catalog/dict-catalog.component';
 import { DictItemComponent } from './module/system/dictionay/dict-item/dict-item.component';
 import { RoleComponent } from './module/system/role/role.component';
+import { UserComponent } from './module/system/user/user.component';
 
 registerLocaleData(zh);
 
@@ -27,7 +28,8 @@ registerLocaleData(zh);
     HomeComponent,
     DictCatalogComponent,
     DictItemComponent,
-    RoleComponent
+    RoleComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
