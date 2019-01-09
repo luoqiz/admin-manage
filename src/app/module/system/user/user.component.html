@@ -76,7 +76,9 @@
         <tbody>
         <tr *ngFor="let data of ajaxTable.data">
           <td>{{data.username}}</td>
-          <td><nz-avatar [nzSize]="64" [nzSrc]="data.avatar"></nz-avatar></td>
+          <td>
+            <nz-avatar [nzSize]="64" [nzSrc]="data.avatar"></nz-avatar>
+          </td>
           <td>{{data.phone}}</td>
           <td>{{data.email}}</td>
 
@@ -101,6 +103,7 @@
           <td>
             <button nz-button (click)="updateRow(data.id)"> 修改</button>
             <button nz-button (click)="deleteRow(data.id)"> 删除</button>
+            <button nz-button (click)="roleDetial(data.id)"> 角色</button>
           </td>
         </tr>
         </tbody>
@@ -118,7 +121,8 @@
       <div nz-row nzGutter="16" [hidden]="!validateForm.get('id').value">
         <div nz-col nzSpan="24">
 
-          <nz-avatar [nzSize]="100" [nzSrc]="validateForm.get('avatar').value" style="vertical-align: middle;"></nz-avatar>
+          <nz-avatar [nzSize]="100" [nzSrc]="validateForm.get('avatar').value"
+                     style="vertical-align: middle;"></nz-avatar>
           <div style="display: inline-block;margin-left: 60px;">
             <h2>ID :{{validateForm.get('id').value}}</h2>
             <h2>用户名 :{{validateForm.get('username').value}}</h2>
@@ -193,12 +197,12 @@
         <div nz-col nzSpan="12">
           <nz-form-item>
             <nz-form-label>账号有效性</nz-form-label>
-              <nz-form-control>
-                <nz-radio-group formControlName="enabled">
-                  <label nz-radio [nzValue]="true">有效</label>
-                  <label nz-radio [nzValue]="false">无效</label>
-                </nz-radio-group>
-              </nz-form-control>
+            <nz-form-control>
+              <nz-radio-group formControlName="enabled">
+                <label nz-radio [nzValue]="true">有效</label>
+                <label nz-radio [nzValue]="false">无效</label>
+              </nz-radio-group>
+            </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col nzSpan="12">
@@ -234,7 +238,6 @@
                 nzFormat="yyyy-MM-dd HH:mm:ss"
                 nzPlaceHolder="Select Time"
                 formControlName="expiredTime"
-                (nzOnOk)="onOk($event)"
               ></nz-date-picker>
             </nz-form-control>
           </nz-form-item>
@@ -245,7 +248,8 @@
           <nz-form-item>
             <nz-form-label>备注</nz-form-label>
             <nz-form-control>
-              <textarea nz-input placeholder="备注" [nzAutosize]="{ minRows: 4, maxRows: 4 }" formControlName="remarks"></textarea>
+              <textarea nz-input placeholder="备注" [nzAutosize]="{ minRows: 4, maxRows: 4 }"
+                        formControlName="remarks"></textarea>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -262,3 +266,15 @@
   </nz-drawer>
 
 </div>
+
+<!-- 角色修改 -->
+<nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="isVisibleMiddle"
+          nzTitle="用户角色更新" (nzOnCancel)="handleCancelMiddle()" (nzOnOk)="handleOkMiddle()">
+  <nz-transfer
+    [nzDataSource]="roleList"
+    [nzDisabled]="disabled"
+    nzShowSearch
+    (nzSelectChange)="select($event)"
+    (nzChange)="change($event)">
+  </nz-transfer>
+</nz-modal>

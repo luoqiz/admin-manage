@@ -13,6 +13,9 @@ import {SystemUserService} from '../../../shared/service/system-user.service';
 })
 export class UserComponent implements OnInit {
 
+  constructor(private fb: FormBuilder, private userService: SystemUserService, private message: NzMessageService) {
+  }
+
   // 表格所需数据
   pageIndex = 1;
   pageSize = 10;
@@ -34,6 +37,10 @@ export class UserComponent implements OnInit {
 
   // 抽屉显示
   visible = false;
+
+  /***************** 角色修改 ************/
+  isVisibleMiddle = false;
+  roleList = [];
 
   open(reset: boolean): void {
     if (reset) {
@@ -132,9 +139,6 @@ export class UserComponent implements OnInit {
     });
   }
 
-  constructor(private fb: FormBuilder, private userService: SystemUserService, private message: NzMessageService) {
-  }
-
   ngOnInit(): void {
     this.searchData();
     this.validateForm = this.fb.group({
@@ -153,6 +157,87 @@ export class UserComponent implements OnInit {
       unlockedTime: [null],
       remarks: [null]
     });
+  }
+
+  /***************** 角色修改 ************/
+  handleOkMiddle(): void {
+    // [{type:add,userId:1,roleId:2},{type:del,id:2}]
+    const updateData = [];
+    for (const role of this.roleList) {
+      if (role['change'] === true) {
+        if (role['direction'] !== 'right') {
+          updateData.push({type: 'del', 'id': role['reId']});
+        } else {
+          updateData.push({type: 'add', userId: role['userId'], roleId: role['roleId']});
+        }
+      }
+    }
+    if (updateData.length < 1) {
+      this.message.info('角色未更改！');
+      return;
+    }
+    this.userService.updateRoleInfo(JSON.stringify(updateData)).subscribe((result: any) => {
+      if (result.status === '200') {
+        this.message.success(result.msg);
+      } else {
+        this.message.error(result.msg);
+      }
+    });
+    // console.log('updateData', updateData);
+    this.isVisibleMiddle = false;
+  }
+
+  handleCancelMiddle(): void {
+    this.isVisibleMiddle = false;
+  }
+
+  roleDetial(userId: string) {
+
+    this.isVisibleMiddle = true;
+    this.roleList = [];
+    this.userService.listRoleByUserId(userId).subscribe((result: any) => {
+      if (result.status === '200') {
+        console.log('获取角色列表', result.results);
+        for (const item of result.results) {
+          this.roleList = [...this.roleList, {
+            roleId: item['id'],
+            reId: item['reId'],
+            key: item['role_code'],
+            title: item['role_name'],
+            description: item['remarks'],
+            direction: item['owner'] === '1' ? '' : 'right',
+            change: false,
+            userId: userId
+          }];
+        }
+
+      } else {
+        this.message.error(result.msg);
+      }
+    });
+  }
+
+
+  // tslint:disable-next-line:no-any
+  filterOption(inputValue: string, item: any): boolean {
+    return item.description.indexOf(inputValue) > -1;
+  }
+
+  select(ret: {}): void {
+    console.log('nzSelectChange', ret);
+  }
+
+  change(ret: {}): void {
+    console.log('list', this.roleList);
+    console.log('ret[\'list\']', ret['list']);
+    for (const role of this.roleList) {
+      for (const item of ret['list']) {
+        if (role['key'] === item['key']) {
+          role['change'] = !role['change'];
+        }
+      }
+    }
+    console.log('newlist', this.roleList);
   }
 
 }

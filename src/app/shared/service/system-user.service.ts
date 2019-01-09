@@ -56,11 +56,30 @@ export class SystemUserService {
   }
 
   /**
-   * 删除角色记录
+   * 删除记录
    * @param id
    */
   deleteById(id: string) {
     const urlPath = '/user/' + id;
     return this.http.delete(urlPath);
+  }
+
+  /**
+   * 获取角色记录
+   * @param userId
+   */
+  listRoleByUserId(userId: string) {
+    const urlPath = '/user/role/' + userId;
+    return this.http.get(urlPath);
+  }
+
+
+  /**
+   * 获取角色信息
+   * @param userRoleRe
+   */
+  updateRoleInfo(userRoleRe: string) {
+    const urlPath = '/user/role';
+    return this.http.put(urlPath, {userRoleRe});
   }
 }

@@ -2,7 +2,7 @@
   <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
     <nz-form-item>
       <nz-form-control>
-        <nz-input-group [nzPrefix]="prefixUser">
+        <nz-input-group >
           <input type="text" nz-input formControlName="userName" placeholder="Username">
         </nz-input-group>
         <nz-form-explain *ngIf="validateForm.get('userName').dirty && validateForm.get('userName').errors">Please input your username!</nz-form-explain>
@@ -10,7 +10,7 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
-        <nz-input-group [nzPrefix]="prefixLock">
+        <nz-input-group >
           <input type="password" nz-input formControlName="password" placeholder="Password">
         </nz-input-group>
         <nz-form-explain *ngIf="validateForm.get('password').dirty && validateForm.get('password').errors">Please input your Password!</nz-form-explain>
