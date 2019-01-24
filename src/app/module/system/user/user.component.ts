@@ -105,6 +105,9 @@ export class UserComponent implements OnInit {
     // 找寻数组对象中符合条件的对象并赋值给其他dictCatalog
     const findIndex = this.dataSet.findIndex(item => item.id.trim() === id.trim());
     this.systemUser = this.dataSet[findIndex];
+    if (!!this.systemUser.expiredTime) {
+      this.systemUser.expiredTime = new Date(this.systemUser.expiredTime);
+    }
     this.validateForm.patchValue(this.systemUser);
     this.open(false);
 
